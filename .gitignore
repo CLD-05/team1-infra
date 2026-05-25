@@ -31,3 +31,20 @@ override.tf.json
 .terraformrc
 terraform.rc
 "@ | Out-File -FilePath .gitignore -Encoding utf8
+
+# KEY, PEM 등 20260525 2350 추가
+*.pem
+*.key
+*.pub
+id_rsa
+id_rsa.pub
+# 프로젝트 관련
+.terraform.lock.hcl
+# 기타 임시파일
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
