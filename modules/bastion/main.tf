@@ -186,3 +186,23 @@ resource "aws_iam_role_policy" "bastion_iam_read" {
     }]
   })
 }
+
+resource "aws_iam_role_policy" "bastion_ssm_write" {
+  name = "${var.project}-bastion-ssm-write"
+  role = aws_iam_role.bastion.name
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect = "Allow"
+      Action = [
+        "ssm:PutParameter",
+        "ssm:GetParameter",
+        "ssm:GetParameters",
+        "ssm:GetParametersByPath",
+        "ssm:DeleteParameter"
+      ]
+      Resource = "arn:aws:ssm:ap-northeast-2:676897632273:parameter/team1/*"
+    }]
+  })
+}
