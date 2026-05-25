@@ -1,3 +1,14 @@
+# bootstrap apply 먼저 실행
+---
+
+```
+cd bootstrap
+terraform init
+terraform validate
+terraform plan
+terraform apply
+```
+
 # terraform apply 후 AWS 리소스 확인 목록
 
 ---
