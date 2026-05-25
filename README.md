@@ -1,4 +1,5 @@
-# bootstrap apply 실행 (초기 실행 시 1번만 진행 / destroy 실행 했으면 메인 terraform 실행 전에 먼저 실행)
+# bootstrap apply 실행 
+- 초기 실행 1번만 진행. s3, DynamoDB 리소스 남길 시 terraform destroy X
 ---
 
 ```
