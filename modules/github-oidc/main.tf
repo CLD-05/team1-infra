@@ -56,31 +56,7 @@ resource "aws_iam_role" "github_actions" {
   }
 }
 
-# 실무에서는 최소 권한 적용:
-#   - ECR Push·Pull: AmazonEC2ContainerRegistryPowerUser
-#   - S3 GetObject: 특정 버킷만 명시
-# ECR Push용 권한만
-resource "aws_iam_role_policy" "github_actions" {
-  name = "github-actions-policy"
-  role = aws_iam_role.github_actions.name
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Action = [
-          "ecr:GetAuthorizationToken",
-          "ecr:BatchCheckLayerAvailability",
-          "ecr:GetDownloadUrlForLayer",
-          "ecr:BatchGetImage",
-          "ecr:PutImage",
-          "ecr:InitiateLayerUpload",
-          "ecr:UploadLayerPart",
-          "ecr:CompleteLayerUpload"
-        ]
-        Resource = "*"
-      }
-    ]
-  })
+resource "aws_iam_role_policy_attachment" "ecr_power_user" {
+  role       = aws_iam_role.github_actions.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPowerUser"
 }
