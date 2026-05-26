@@ -36,11 +36,11 @@ resource "aws_ecr_lifecycle_policy" "this" {
     rules = [
       {
         rulePriority = 1
-        description  = "최근 30개 이미지 보존, 이후 자동 만료"
+        description  = "최근 10개 이미지 보존, 이후 자동 만료"
         selection = {
           tagStatus   = "any"
           countType   = "imageCountMoreThan"
-          countNumber = 30
+          countNumber = 10
         }
         action = {
           type = "expire"

@@ -57,3 +57,9 @@ variable "my_ip" {
   type    = string
   default = ""
 }
+
+variable "enable_nat_per_az" {
+  type        = bool
+  default     = false
+  description = "true: AZ당 NAT Gateway 1개 (prod) / false: NAT Gateway 1개 (dev)"
+}

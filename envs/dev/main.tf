@@ -1,17 +1,19 @@
 # main.tf
 
 module "vpc" {
-  source        = "./modules/vpc"
-  project       = var.project
-  cluster_name  = var.cluster_name
-  vpc_cidr      = var.vpc_cidr
-  azs           = var.azs
-  public_cidrs  = var.public_cidrs
-  private_cidrs = var.private_cidrs
+  source            = "../../modules/vpc"
+  project           = var.project
+  cluster_name      = var.cluster_name
+  vpc_cidr          = var.vpc_cidr
+  azs               = var.azs
+  public_cidrs      = var.public_cidrs
+  private_cidrs     = var.private_cidrs
+  isolated_cidrs    = var.isolated_cidrs
+  enable_nat_per_az = var.enable_nat_per_az
 }
 
 module "bastion" {
-  source           = "./modules/bastion"
+  source           = "../../modules/bastion"
   project          = var.project
   vpc_id           = module.vpc.vpc_id
   public_subnet_id = module.vpc.public_subnet_ids[0]
@@ -21,7 +23,7 @@ module "bastion" {
   my_ip            = var.my_ip
 }
 module "eks" {
-  source                    = "./modules/eks"
+  source                    = "../../modules/eks"
   cluster_name              = var.cluster_name
   environment               = var.environment
   vpc_id                    = module.vpc.vpc_id
@@ -35,13 +37,13 @@ module "eks" {
 }
 
 module "ecr" {
-  source       = "./modules/ecr"
+  source       = "../../modules/ecr"
   project      = var.project
   repositories = var.repositories
 }
 
 module "rds" {
-  source                    = "./modules/rds"
+  source                    = "../../modules/rds"
   project                   = var.project
   vpc_id                    = module.vpc.vpc_id
   isolated_subnet_ids       = module.vpc.isolated_subnet_ids
@@ -53,7 +55,7 @@ module "rds" {
 }
 
 module "elasticache" {
-  source                 = "./modules/elasticache"
+  source                 = "../../modules/elasticache"
   project                = var.project
   vpc_id                 = module.vpc.vpc_id
   isolated_subnet_ids    = module.vpc.isolated_subnet_ids
@@ -61,7 +63,7 @@ module "elasticache" {
 }
 
 module "github_oidc" {
-  source      = "./modules/github-oidc"
+  source      = "../../modules/github-oidc"
   github_org  = var.github_org
   github_repo = var.github_repo
 }
