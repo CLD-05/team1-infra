@@ -80,21 +80,20 @@ resource "aws_nat_gateway" "main" {
 }
 
 resource "aws_route_table" "public" {
-  count  = var.enable_nat_per_az ? local.private_count : 1
   vpc_id = aws_vpc.main.id
   route {
-    cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = var.enable_nat_per_az ? aws_nat_gateway.main[count.index].id : aws_nat_gateway.main[0].id
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.main.id
   }
   tags = {
-    Name = "${var.project}-private-rt-${count.index}"
+    Name = "${var.project}-public-rt"
   }
 }
 
 resource "aws_route_table_association" "public" {
   count          = local.public_count
   subnet_id      = aws_subnet.public[count.index].id
-  route_table_id = aws_route_table.public[0].id
+  route_table_id = aws_route_table.public.id
 }
 
 resource "aws_route_table" "private" {
