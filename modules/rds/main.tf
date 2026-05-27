@@ -100,6 +100,7 @@ resource "aws_db_instance" "primary" {
 resource "aws_db_instance" "replica" {
   identifier          = "${var.project}-rds-replica"
   replicate_source_db = aws_db_instance.primary.identifier
+  availability_zone   = var.replica_az      # replica az 지정
   instance_class      = var.instance_class
   storage_encrypted   = true
   kms_key_id          = aws_kms_key.rds.arn

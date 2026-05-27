@@ -54,13 +54,6 @@ module "rds" {
   multi_az                  = var.multi_az
 }
 
-module "elasticache" {
-  source                 = "../../modules/elasticache"
-  project                = var.project
-  vpc_id                 = module.vpc.vpc_id
-  isolated_subnet_ids    = module.vpc.isolated_subnet_ids
-  node_security_group_id = module.eks.node_security_group_id
-}
 
 module "github_oidc" {
   source      = "../../modules/github-oidc"

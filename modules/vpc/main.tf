@@ -72,7 +72,8 @@ resource "aws_eip" "nat" {
 resource "aws_nat_gateway" "main" {
   count         = var.enable_nat_per_az ? local.public_count : 1
   allocation_id = aws_eip.nat[count.index].id
-  subnet_id     = aws_subnet.public[0].id
+  # subnet_id     = aws_subnet.public[0].id
+  subnet_id     = aws_subnet.public[count.index].id     # NAT gw 위치 2a, 2c에 배치하도록 변경
   depends_on    = [aws_internet_gateway.main]
   tags = {
     Name = "${var.project}-natgw-${count.index}"
