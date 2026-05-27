@@ -17,3 +17,8 @@ output "security_group_id" {
 output "db_name" {
   value = aws_db_instance.primary.db_name
 }
+
+output "primary_instance_id" {
+  value       = aws_db_instance.primary.id
+  description = "Primary RDS Instance ID"
+}

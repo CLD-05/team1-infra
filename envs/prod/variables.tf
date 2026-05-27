@@ -122,3 +122,24 @@ variable "enable_nat_per_az" {
   type    = bool
   default = false
 }
+
+# CloudFront
+variable "aws_account_id" {
+  type        = string
+  description = "AWS 계정 ID"
+}
+
+variable "domain_name" {
+  type        = string
+  description = "서비스 도메인 이름"
+}
+
+variable "route53_zone_id" {
+  type        = string
+  description = "Route53 호스팅 영역 ID"
+}
+
+variable "alb_dns_name" {
+  type        = string
+  description = "EKS에 배포된 ALB의 DNS 주소"
+}
