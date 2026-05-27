@@ -47,3 +47,8 @@ variable "multi_az" {
   default     = false
   description = "Day 1~5: false / Day 6 시연 전: true로 변경"
 }
+
+variable "replica_az" {
+  type = string
+  default = "ap-northeast-2c"
+}
