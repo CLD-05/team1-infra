@@ -54,16 +54,31 @@ module "rds" {
   multi_az                  = var.multi_az
 }
 
-module "elasticache" {
-  source                 = "../../modules/elasticache"
-  project                = var.project
-  vpc_id                 = module.vpc.vpc_id
-  isolated_subnet_ids    = module.vpc.isolated_subnet_ids
-  node_security_group_id = module.eks.node_security_group_id
-}
-
 module "github_oidc" {
   source      = "../../modules/github-oidc"
   github_org  = var.github_org
   github_repo = var.github_repo
+}
+
+data "aws_ssm_parameter" "slack_webhook" {
+  name            = "/team1/prod/slack-webhook-url"
+  with_decryption = true
+}
+
+module "cloudfront" {
+  source          = "../../modules/cloudfront"
+  env             = var.environment
+  aws_account_id  = var.aws_account_id
+  domain_name     = var.domain_name
+  route53_zone_id = var.route53_zone_id
+  alb_dns_name    = var.alb_dns_name
+}
+
+module "monitoring" {
+  source              = "../../modules/monitoring"
+  env                 = var.environment
+  eks_cluster_name    = var.cluster_name
+  rds_instance_id     = module.rds.primary_instance_id
+  rds_max_connections = 1000
+  slack_webhook_url   = data.aws_ssm_parameter.slack_webhook.value
 }

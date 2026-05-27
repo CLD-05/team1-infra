@@ -59,3 +59,27 @@ module "github_oidc" {
   github_org  = var.github_org
   github_repo = var.github_repo
 }
+
+# SSM에서 읽기
+data "aws_ssm_parameter" "slack_webhook" {
+  name            = "/team1/dev/monitoring/slack-webhook"
+  with_decryption = true
+}
+
+module "cloudfront" {
+  source          = "../../modules/cloudfront"
+  env             = var.environment
+  aws_account_id  = var.aws_account_id
+  domain_name     = var.domain_name
+  route53_zone_id = var.route53_zone_id
+  alb_dns_name    = var.alb_dns_name
+}
+
+module "monitoring" {
+  source              = "../../modules/monitoring"
+  env                 = var.environment
+  eks_cluster_name    = var.cluster_name
+  rds_instance_id     = module.rds.primary_instance_id
+  rds_max_connections = 1000
+  slack_webhook_url   = data.aws_ssm_parameter.slack_webhook.value
+}
