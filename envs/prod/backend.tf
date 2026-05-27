@@ -2,10 +2,10 @@
 
 terraform {
   backend "s3" {
-    bucket         = "team1-terraform-state"
-    key            = "prod/terraform.tfstate"
+    bucket         = "tfstate-lionkdt5-team1"
+    key            = "project2/terraform.tfstate"
     region         = "ap-northeast-2"
-    dynamodb_table = "terraform-lock"
+    dynamodb_table = "tfstate-lock-team1"
     encrypt        = true
   }
 }
