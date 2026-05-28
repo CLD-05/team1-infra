@@ -9,3 +9,8 @@ variable "github_repo" {
   description = "GitHub 저장소명"
   type        = string
 }
+
+variable "project" {
+  description = "Project name"
+  type        = string
+}

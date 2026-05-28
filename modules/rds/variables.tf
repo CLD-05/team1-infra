@@ -47,3 +47,14 @@ variable "multi_az" {
   default     = false
   description = "Day 1~5: false / Day 6 시연 전: true로 변경"
 }
+
+variable "replica_az" {
+  type    = string
+  default = "ap-northeast-2c"
+}
+
+variable "primary_az" {
+  type        = string
+  default     = "ap-northeast-2a"
+  description = "RDS Primary 가용 영역"
+}

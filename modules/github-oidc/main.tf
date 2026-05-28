@@ -23,14 +23,14 @@ resource "aws_iam_openid_connect_provider" "github" {
   ]
 
   tags = {
-    Name = "github-actions-oidc"
+    Name = "team1-github-actions-oidc"
   }
 }
 
 # GitHub Actions용 IAM Role
 # Trust Policy: 지정한 저장소의 GitHub Actions만 Assume 가능
 resource "aws_iam_role" "github_actions" {
-  name = "github-actions-terraform-role"
+  name = "${var.project}-github-actions-terraform-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -52,7 +52,7 @@ resource "aws_iam_role" "github_actions" {
   })
 
   tags = {
-    Name = "github-actions-terraform-role"
+    Name = "team1-github-actions-terraform-role"
   }
 }
 

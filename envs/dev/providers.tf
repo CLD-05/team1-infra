@@ -16,4 +16,11 @@ terraform {
 
 provider "aws" {
   region = var.aws_region
+  default_tags {
+    tags = {
+      team    = "team1"
+      project = "team1"
+      env     = "dev"
+    }
+  }
 }

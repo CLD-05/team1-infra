@@ -29,10 +29,6 @@ output "rds_replica_endpoint" {
   value = module.rds.replica_endpoint
 }
 
-output "redis_endpoint" {
-  value = module.elasticache.redis_endpoint
-}
-
 output "github_actions_role_arn" {
   value = module.github_oidc.role_arn
 }
