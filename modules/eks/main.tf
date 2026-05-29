@@ -185,3 +185,50 @@ resource "aws_eks_access_policy_association" "bastion" {
 
   depends_on = [aws_eks_access_entry.bastion]
 }
+
+
+# Cluster Autoscaler가 EC2 조회, ASG 조절할 권한
+resource "aws_iam_policy" "cluster_autoscaler" {
+  name = "${var.cluster_name}-cluster-autoscaler"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "autoscaling:DescribeAutoScalingGroups",
+          "autoscaling:DescribeAutoScalingInstances",
+          "autoscaling:DescribeLaunchConfigurations",
+          "autoscaling:DescribeScalingActivities",
+          "autoscaling:SetDesiredCapacity",
+          "autoscaling:TerminateInstanceInAutoScalingGroup",
+          "ec2:DescribeLaunchTemplateVersions"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+# IRSA Role
+module "cluster_autoscaler_irsa" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "~> 5.48"
+
+  role_name = "${var.cluster_name}-cluster-autoscaler"
+
+  role_policy_arns = {
+    autoscaler = aws_iam_policy.cluster_autoscaler.arn
+  }
+
+  oidc_providers = {
+    main = {
+      provider_arn = module.eks.oidc_provider_arn
+
+      namespace_service_accounts = [
+        "kube-system:cluster-autoscaler"
+      ]
+    }
+  }
+}

@@ -53,6 +53,10 @@ resource "aws_kms_key" "rds" {
   }
 }
 
+
+/*MySQL 설치
+스토리지 생성
+endpoint 생성*/
 resource "aws_db_instance" "primary" {
   identifier        = "${var.project}-rds-primary"
   engine            = "mysql"

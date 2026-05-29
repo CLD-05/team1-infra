@@ -5,6 +5,7 @@
 #   - public_subnet_ids : 퍼블릭 서브넷 ID 목록 (Bastion 배치)
 #   - private_subnet_ids: 프라이빗 서브넷 ID 목록 (EKS 노드 배치)
 #   - nat_gateway_ip    : NAT GW 퍼블릭 IP (방화벽 화이트리스트용)
+#   - isolated_subnet_ids
 
 output "vpc_id" {
   value = aws_vpc.main.id
