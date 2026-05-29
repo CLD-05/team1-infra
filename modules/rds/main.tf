@@ -1,10 +1,4 @@
 # modules/rds/main.tf
-#
-# 생성 리소스:
-#   - aws_db_subnet_group  : RDS 서브넷 그룹 (Isolated Subnet)
-#   - aws_security_group   : RDS SG (EKS 노드에서만 접근 허용)
-#   - aws_db_instance      : RDS MySQL (Single-AZ → Multi-AZ는 Day6에 전환)
-#   - aws_db_instance      : RDS Read Replica
 
 resource "aws_db_subnet_group" "this" {
   name       = "${var.project}-rds-subnet-group"
@@ -16,7 +10,6 @@ resource "aws_db_subnet_group" "this" {
   }
 }
 
-# RDS 보안그룹 (EKS 노드 SG에서만 3306 허용)
 resource "aws_security_group" "rds" {
   name        = "${var.project}-rds-sg"
   description = "RDS Security Group"
@@ -50,7 +43,6 @@ resource "aws_security_group" "rds" {
   }
 }
 
-# KMS Key (RDS 암호화용)
 resource "aws_kms_key" "rds" {
   description             = "RDS encryption key"
   deletion_window_in_days = 7
@@ -61,26 +53,28 @@ resource "aws_kms_key" "rds" {
   }
 }
 
-# RDS Primary (Single-AZ → Day6에 Multi-AZ 전환)
+
+/*MySQL 설치
+스토리지 생성
+endpoint 생성*/
 resource "aws_db_instance" "primary" {
   identifier        = "${var.project}-rds-primary"
   engine            = "mysql"
   engine_version    = "8.0"
   instance_class    = var.instance_class
+  availability_zone = var.multi_az ? null : var.primary_az
   allocated_storage = 20
   storage_type      = "gp3"
   storage_encrypted = true
   kms_key_id        = aws_kms_key.rds.arn
 
   db_name  = var.db_name
-  username = var.db_username
-  password = var.db_password
+  username = var.db_username # SSM에서 넘겨받음
+  password = var.db_password # SSM에서 넘겨받음
 
   db_subnet_group_name   = aws_db_subnet_group.this.name
   vpc_security_group_ids = [aws_security_group.rds.id]
 
-  # Day 1~5: Single-AZ
-  # Day 6: Multi-AZ 전환
   multi_az            = var.multi_az
   publicly_accessible = false
   skip_final_snapshot = true
@@ -96,11 +90,10 @@ resource "aws_db_instance" "primary" {
   }
 }
 
-# RDS Read Replica
 resource "aws_db_instance" "replica" {
   identifier          = "${var.project}-rds-replica"
   replicate_source_db = aws_db_instance.primary.identifier
-  availability_zone   = var.replica_az      # replica az 지정
+  availability_zone   = var.multi_az ? null : var.replica_az
   instance_class      = var.instance_class
   storage_encrypted   = true
   kms_key_id          = aws_kms_key.rds.arn
@@ -108,6 +101,8 @@ resource "aws_db_instance" "replica" {
   publicly_accessible    = false
   skip_final_snapshot    = true
   vpc_security_group_ids = [aws_security_group.rds.id]
+
+  depends_on = [aws_db_instance.primary]
 
   tags = {
     Name      = "${var.project}-rds-replica"

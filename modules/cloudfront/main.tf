@@ -18,7 +18,7 @@ provider "aws" {
 resource "aws_acm_certificate" "main" {
   provider          = aws.us_east_1
   domain_name       = var.domain_name
-  validation_method = "DNS"        # Route53을 통한 자동 DNS 레코드 검증 방식 채택
+  validation_method = "DNS" # Route53을 통한 자동 DNS 레코드 검증 방식 채택
 
   lifecycle {
     create_before_destroy = true
@@ -60,10 +60,10 @@ resource "aws_wafv2_web_acl" "main" {
   provider    = aws.us_east_1
   name        = "${var.env}-waf"
   description = "WAF for CloudFront"
-  scope       = "CLOUDFRONT"                # ALB용은 REGIONAL, CloudFront용은 CLOUDFRONT
+  scope       = "CLOUDFRONT" # ALB용은 REGIONAL, CloudFront용은 CLOUDFRONT
 
   default_action {
-    allow {}                                # 기본 허용, 아래 rule이 차단
+    allow {} # 기본 허용, 아래 rule이 차단
   }
 
   # AWS 관리형 규칙 — 일반적인 웹 공격 차단
@@ -71,7 +71,9 @@ resource "aws_wafv2_web_acl" "main" {
     name     = "AWSManagedRulesCommonRuleSet"
     priority = 1
 
-    override_action { none {} }
+    override_action {
+      none {}
+    }
 
     statement {
       managed_rule_group_statement {
@@ -92,7 +94,9 @@ resource "aws_wafv2_web_acl" "main" {
     name     = "RateLimitRule"
     priority = 2
 
-    action { block {} }
+    action {
+      block {}
+    }
 
     statement {
       rate_based_statement {
@@ -121,7 +125,7 @@ resource "aws_wafv2_web_acl" "main" {
 # S3 버킷 (정적 리소스)
 resource "aws_s3_bucket" "static" {
   bucket        = "${var.env}-team1-static-${var.aws_account_id}"
-  force_destroy = true                      # terraform destroy 시 버킷 내용도 삭제
+  force_destroy = true # terraform destroy 시 버킷 내용도 삭제
 
   tags = { Name = "${var.env}-static-bucket" }
 }
@@ -170,7 +174,7 @@ resource "aws_cloudfront_distribution" "main" {
   enabled             = true
   comment             = "${var.env}-distribution"
   default_root_object = "index.html"
-  aliases             = [var.domain_name]  # 커스텀 도메인 연결
+  aliases             = [var.domain_name] # 커스텀 도메인 연결
   web_acl_id          = aws_wafv2_web_acl.main.arn
 
   # ALB (동적 콘텐츠 — Spring Boot)
@@ -181,7 +185,7 @@ resource "aws_cloudfront_distribution" "main" {
     custom_origin_config {
       http_port              = 80
       https_port             = 443
-      origin_protocol_policy = "https-only"   # ALB → CloudFront 구간 HTTPS
+      origin_protocol_policy = "https-only" # ALB → CloudFront 구간 HTTPS
       origin_ssl_protocols   = ["TLSv1.2"]
     }
   }
@@ -196,14 +200,14 @@ resource "aws_cloudfront_distribution" "main" {
   # 기본 동작 — ALB로 전달 (동적 콘텐츠)
   default_cache_behavior {
     target_origin_id       = "alb-origin"
-    viewer_protocol_policy = "redirect-to-https"  # HTTP → HTTPS 리다이렉트
+    viewer_protocol_policy = "redirect-to-https" # HTTP → HTTPS 리다이렉트
     allowed_methods        = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
     cached_methods         = ["GET", "HEAD"]
     compress               = true
 
     forwarded_values {
-      query_string = true                         # 쿼리 파라미터 ALB에 전달
-      cookies { forward = "all" }                 # 쿠키 전달 (JWT 쿠키 필수)
+      query_string = true         # 쿼리 파라미터 ALB에 전달
+      cookies { forward = "all" } # 쿠키 전달 (JWT 쿠키 필수)
       headers = ["Authorization", "Host"]
     }
 
@@ -227,8 +231,8 @@ resource "aws_cloudfront_distribution" "main" {
     }
 
     min_ttl     = 0
-    default_ttl = 86400                           # 정적 리소스 1일 캐시
-    max_ttl     = 31536000                        # 최대 1년
+    default_ttl = 86400    # 정적 리소스 1일 캐시
+    max_ttl     = 31536000 # 최대 1년
   }
 
   restrictions {

@@ -70,16 +70,16 @@ variable "node_desired" {
   default = 2
 }
 
-# RDS
-variable "db_username" {
-  type      = string
-  sensitive = true
-}
+# # RDS
+# variable "db_username" {
+#   type      = string
+#   sensitive = true
+# }
 
-variable "db_password" {
-  type      = string
-  sensitive = true
-}
+# variable "db_password" {
+#   type      = string
+#   sensitive = true
+# }
 
 variable "multi_az" {
   type    = bool
@@ -129,17 +129,17 @@ variable "aws_account_id" {
   description = "AWS 계정 ID"
 }
 
-variable "domain_name" {
-  type        = string
-  description = "서비스 도메인 이름"
-}
+# variable "domain_name" {
+#   type        = string
+#   description = "서비스 도메인 이름"
+# }
 
-variable "route53_zone_id" {
-  type        = string
-  description = "Route53 호스팅 영역 ID"
-}
+# variable "route53_zone_id" {
+#   type        = string
+#   description = "Route53 호스팅 영역 ID"
+# }
 
-variable "alb_dns_name" {
-  type        = string
-  description = "EKS에 배포된 ALB의 DNS 주소"
-}
+# variable "alb_dns_name" {
+#   type        = string
+#   description = "EKS에 배포된 ALB의 DNS 주소"
+# }

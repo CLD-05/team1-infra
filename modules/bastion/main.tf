@@ -17,13 +17,14 @@ data "aws_ami" "ubuntu" {
   }
 }
 
+data "aws_caller_identity" "current" {}
+
 # 보안그룹
 resource "aws_security_group" "bastion" {
   name        = "${var.project}-bastion-sg"
   description = "Bastion EC2 Security Group"
   vpc_id      = var.vpc_id
 
-  # 키 페어 방식일 때만 SSH 인바운드 허용
   dynamic "ingress" {
     for_each = var.use_ssm ? [] : [1]
     content {
@@ -202,7 +203,11 @@ resource "aws_iam_role_policy" "bastion_ssm_write" {
         "ssm:GetParametersByPath",
         "ssm:DeleteParameter"
       ]
-      Resource = "arn:aws:ssm:ap-northeast-2:676897632273:parameter/team1/*"
+      # data source로 account ID 자동 참조
+      Resource = [
+        "arn:aws:ssm:ap-northeast-2:${data.aws_caller_identity.current.account_id}:parameter/team1",
+        "arn:aws:ssm:ap-northeast-2:${data.aws_caller_identity.current.account_id}:parameter/team1/*"
+      ]
     }]
   })
 }

@@ -49,6 +49,12 @@ variable "multi_az" {
 }
 
 variable "replica_az" {
-  type = string
+  type    = string
   default = "ap-northeast-2c"
+}
+
+variable "primary_az" {
+  type        = string
+  default     = "ap-northeast-2a"
+  description = "RDS Primary 가용 영역"
 }

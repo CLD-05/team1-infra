@@ -7,6 +7,8 @@
 #   - oidc_provider_arn       : IRSA 구성 시 사용
 #   - node_security_group_id  : 노드 SG ID
 #   - alb_controller_role_arn : ALB Controller IRSA Role ARN
+#   - ebs_csi_role_arn
+#   - eso_role_arn
 
 output "cluster_name" {
   value = module.eks.cluster_name
