@@ -83,7 +83,7 @@ variable "node_desired" {
 
 variable "multi_az" {
   type    = bool
-  default = false
+  default = true
 }
 
 # GitHub OIDC

@@ -6,7 +6,7 @@
 #     - scan_on_push: true (취약점 자동 스캔)
 #     - encryption_configuration: AES256
 #   - aws_ecr_lifecycle_policy × N
-#     - 최근 30개 이미지 보존, 이후 자동 만료
+#     - 최근 10개 이미지 보존, 이후 자동 만료
 
 resource "aws_ecr_repository" "this" {
   for_each = toset(var.repositories)
