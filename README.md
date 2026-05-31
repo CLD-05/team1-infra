@@ -82,24 +82,27 @@ aws eks update-kubeconfig \
   --region $AWS_REGION \
   --name team1-cluster
 ---
+
+# DB Username
 aws ssm put-parameter \
-  --name "/team1/eks-dev/db-password" \
-  --value '비밀번호' \
+  --name "/team1/eks-dev/db-username" \
+  --value "<DB_USERNAME>" \
   --type SecureString \
   --region $AWS_REGION
 
+# DB Password
 aws ssm put-parameter \
-  --name "/team1/eks-dev/db-username" \
-  --value '값' \
+  --name "/team1/eks-dev/db-password" \
+  --value "<DB_PASSWORD>" \
   --type SecureString \
   --region $AWS_REGION
-  
+
+# Slack Webhook
 aws ssm put-parameter \
   --name "/team1/eks-dev/slack-webhook" \
-  --value "주소값" \
+  --value "<SLACK_WEBHOOK_URL>" \
   --type SecureString \
-  --region $AWS_REGION \
-  --profile team1-lye-mfa
+  --region $AWS_REGION
 ```
 
 ---
@@ -133,6 +136,7 @@ Dev (VPC: 10.1.0.0/16)
 | Private | 2c | 10.1.8.0/22 | EKS Worker Node |
 | Isolated | 2a | 10.1.20.0/24 | RDS |
 | Isolated | 2c | 10.1.21.0/24 | RDS |
+
 NAT Gateway × 1 확인 \
 Internet Gateway × 1 확인 \
 Elastic IP × 1 확인
